@@ -1,0 +1,1 @@
+cmd /k "activate YOUR_PYTHON_ENV && python YOUR_FILE_PATH\binance_order_overview.py"
