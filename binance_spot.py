@@ -1,4 +1,5 @@
 from binance.client import Client
+import binance_f
 import time
 import requests
 import pandas as pd
@@ -8,6 +9,7 @@ from dhooks import Webhook
 import decimal
 import cli_inputs
 from threading import Thread
+
 
 def get_credentials():
     root = Path(".")

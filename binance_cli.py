@@ -1,4 +1,5 @@
 import binance_spot
+import binance_usdt_futures
 import threading
 import colorama
 from colorama import Fore
@@ -103,6 +104,97 @@ def binance_spot_cli():
             print("\n")
 
 
+def binance_futures_cli():
+
+    client = binance_usdt_futures.auth()
+
+    exit = False
+    while not exit:
+        print("\n")
+        print(Fore.LIGHTYELLOW_EX + "What do you want to do:"
+              "\n 1 >> display positions"
+              "\n 2 >> open position"
+              "\n 3 >> close/reduce position"
+              "\n 4 >> modify tp/sl"
+              "\n 0 >> exit - Binance Futures"
+              "\n 99 >> restart client"
+              "\n 999 >> check current running processes")
+        try:
+            mode = int(input(Fore.LIGHTYELLOW_EX + "input number >>> "))
+        except:
+            print(Fore.LIGHTYELLOW_EX +"input must be number")
+            mode = 0
+
+        if mode == 0:
+            exit = True
+            print(Fore.LIGHTYELLOW_EX + f"Binance Futures - closing")
+        elif mode == 1:
+            binance_usdt_futures.get_open_positions(client, display=True)
+        elif mode == 2:
+            print("\n")
+            print("Open position mode selected >> options:"
+                  "\n 1 >> market orders"
+                  "\n 2 >> limit orders"
+                  "\n 3 >> TWAPS")
+            try:
+                order_mode = int(input("input number >>> "))
+            except:
+                print("input must be number")
+                order_mode = 0
+
+            if order_mode == 1:
+                binance_usdt_futures.set_market_order_open(client)
+            elif order_mode == 2:
+                print("\n")
+                print("Limit order mode seleceted >> options:"
+                      "\n 1 >> limit orders between 2 prices by $ amount"
+                      )
+                try:
+                    limit_order_mode = int(input("input number >>> "))
+                except:
+                    print("input must be number")
+                    limit_order_mode = 0
+
+                if limit_order_mode == 1:
+                    binance_usdt_futures.set_limits_open(client)
+            elif order_mode == 3:
+                binance_usdt_futures.set_linear_twap_open(client)
+
+        elif mode == 3:
+            print("\n")
+            print("Close / reduce position mode selected >> options:"
+                  "\n 1 >> market orders"
+                  "\n 2 >> limit orders"
+                  "\n 3 >> TWAPS"
+                  "\n 4 >> close all positions")
+            try:
+                order_mode = int(input("input number >>> "))
+            except:
+                print("input must be number")
+                order_mode = 0
+
+            if order_mode == 1:
+                binance_usdt_futures.set_market_order_close(client)
+            elif order_mode == 2:
+                binance_usdt_futures.set_limits_close(client)
+            elif order_mode == 3:
+                binance_usdt_futures.set_linear_twap_close(client)
+            elif order_mode == 4:
+                binance_usdt_futures.close_all_positions(client)
+
+        elif mode == 4:
+            binance_usdt_futures.set_position_sl_tp(client)
+
+        elif mode == 999:
+            print("\n")
+            get_all_running_threads()
+            print("\n")
+        elif mode == 99:
+            print(Fore.LIGHTYELLOW_EX + "Reconnecting client")
+            client = binance_spot.auth()
+            print("\n")
+
+
 def main():
 
     exit = False
@@ -110,6 +202,7 @@ def main():
         print("\n")
         print(Fore.LIGHTYELLOW_EX + "Select account:"
               "\n 1 >> Binance SPOT - personal"
+              "\n 2 >> Binance USDT perps - personal"
               "\n 999 >> check current running processes"
               "\n 0 >> exit terminal")
 
@@ -126,6 +219,9 @@ def main():
         elif mode == 1:
             print("\n")
             binance_spot_cli()
+        elif mode == 2:
+            print("\n")
+            binance_futures_cli()
 
 
 
