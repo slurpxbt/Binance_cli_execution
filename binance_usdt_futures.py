@@ -831,7 +831,7 @@ def set_limits_open(client):
     position_exits = False
     position = None
     for key, value in positions.items():
-        if value["symbol"] == ticker:
+        if value["ticker"] == ticker:
             position_exits = True
             position = value
             break
