@@ -261,7 +261,7 @@ def set_position_sl_tp(client):
 
                             if tp_id is not None:
                                 client.cancel_order(symbol=ticker, orderId=tp_id)
-                            client.new_order(symbol=ticker, side="SELL", type="TAKE_PROFIT_MARKET", stopPrice=takeProfit, closePosition=True, timeInForce="GTC")
+                            client.new_order(symbol=ticker, side="SELL", type="TAKE_PROFIT_MARKET", stopPrice=takeProfit, closePosition=True, timeInForce="GTE_GTC")
                             print(f"{ticker} TP modified >>> new TP: {takeProfit}")
 
                     except:
@@ -279,7 +279,7 @@ def set_position_sl_tp(client):
 
                             if sl_id is not None:
                                 client.cancel_order(symbol=ticker, orderId=sl_id)
-                            client.new_order(symbol=ticker, side="SELL", type="STOP_MARKET", stopPrice=stopLoss, closePosition=True, timeInForce="GTC")
+                            client.new_order(symbol=ticker, side="SELL", type="STOP_MARKET", stopPrice=stopLoss, closePosition=True, timeInForce="GTE_GTC")
                             print(f"{ticker} SL modified >>> new SL: {stopLoss}")
 
                     except:
@@ -297,7 +297,7 @@ def set_position_sl_tp(client):
 
                             if tp_id is not None:
                                 client.cancel_order(symbol=ticker, orderId=tp_id)
-                            client.new_order(symbol=ticker, side="SELL", type="TAKE_PROFIT_MARKET", stopPrice=takeProfit, closePosition=True, timeInForce="GTC")
+                            client.new_order(symbol=ticker, side="SELL", type="TAKE_PROFIT_MARKET", stopPrice=takeProfit, closePosition=True, timeInForce="GTE_GTC")
                             print(f"{ticker} TP modified >>> new TP: {takeProfit}")
                     except:
                         print("TP price should be number")
@@ -315,7 +315,7 @@ def set_position_sl_tp(client):
 
                             if sl_id is not None:
                                 client.cancel_order(symbol=ticker, orderId=sl_id)
-                            client.new_order(symbol=ticker, side="SELL", type="STOP_MARKET", stopPrice=stopLoss, closePosition=True, timeInForce="GTC")
+                            client.new_order(symbol=ticker, side="SELL", type="STOP_MARKET", stopPrice=stopLoss, closePosition=True, timeInForce="GTE_GTC")
                             print(f"{ticker} SL modified >>> new SL: {stopLoss}")
                     except:
                         print("SL price should be number")
@@ -333,7 +333,7 @@ def set_position_sl_tp(client):
 
                             if tp_id is not None:
                                 client.cancel_order(symbol=ticker, orderId=tp_id)
-                            client.new_order(symbol=ticker, side="BUY", type="TAKE_PROFIT_MARKET", stopPrice=takeProfit, closePosition=True, timeInForce="GTC")
+                            client.new_order(symbol=ticker, side="BUY", type="TAKE_PROFIT_MARKET", stopPrice=takeProfit, closePosition=True, timeInForce="GTE_GTC")
                             print(f"{ticker} TP modified >>> new TP: {takeProfit}")
                     except:
                         print("TP price should be number")
@@ -350,7 +350,7 @@ def set_position_sl_tp(client):
 
                             if sl_id is not None:
                                 client.cancel_order(symbol=ticker, orderId=sl_id)
-                            client.new_order(symbol=ticker, side="BUY", type="STOP_MARKET", stopPrice=stopLoss, closePosition=True, timeInForce="GTC")
+                            client.new_order(symbol=ticker, side="BUY", type="STOP_MARKET", stopPrice=stopLoss, closePosition=True, timeInForce="GTE_GTC")
                             print(f"{ticker} SL modified >>> new SL: {stopLoss}")
                     except:
                         print("SL price should be number")
@@ -367,7 +367,7 @@ def set_position_sl_tp(client):
 
                             if tp_id is not None:
                                 client.cancel_order(symbol=ticker, orderId=tp_id)
-                            client.new_order(symbol=ticker, side="BUY", type="TAKE_PROFIT_MARKET", stopPrice=takeProfit, closePosition=True, timeInForce="GTC")
+                            client.new_order(symbol=ticker, side="BUY", type="TAKE_PROFIT_MARKET", stopPrice=takeProfit, closePosition=True, timeInForce="GTE_GTC")
                             print(f"{ticker} TP modified >>> new TP: {takeProfit}")
 
                     except:
@@ -386,7 +386,7 @@ def set_position_sl_tp(client):
 
                             if sl_id is not None:
                                 client.cancel_order(symbol=ticker, orderId=sl_id)
-                            client.new_order(symbol=ticker, side="BUY", type="STOP_MARKET", stopPrice=stopLoss, closePosition=True, timeInForce="GTC")
+                            client.new_order(symbol=ticker, side="BUY", type="STOP_MARKET", stopPrice=stopLoss, closePosition=True, timeInForce="GTE_GTC")
                             print(f"{ticker} SL modified >>> new SL: {stopLoss}")
                     except:
                         print("SL price should be number")
