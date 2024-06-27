@@ -28,7 +28,8 @@ def binance_spot_cli():
               "\n 1 >> display positions"
               "\n 2 >> market orders"
               "\n 3 >> limit orders"
-              "\n 4 >> TWAPS"
+              "\n 4 >> limits at bid/ask"
+              "\n 5 >> TWAPS"
               "\n 0 >> exit - Binance SPOT"
               "\n 99 >> restart client"
               "\n 999 >> check current running processes")
@@ -80,6 +81,23 @@ def binance_spot_cli():
 
             print("\n")
         elif mode == 4:
+            print("\n")
+            print(Fore.LIGHTYELLOW_EX + "Limit order mode selected >> options:"
+                                        "\n 1 >> limit orders by $ amount"
+                                        "\n 2 >> limit orders by account %"
+                  )
+            try:
+                order_mode = int(input(Fore.LIGHTYELLOW_EX + "input number >>> "))
+            except:
+                print(Fore.LIGHTYELLOW_EX + "input must be number")
+                order_mode = 0
+
+            if order_mode == 1:
+                binance_spot.set_limit_orders_usd_bidask(client)
+            elif order_mode == 2:
+                binance_spot.set_limit_orders_pct_bid_ask(client)
+
+        elif mode == 5:
             print("\n")
             print(Fore.LIGHTYELLOW_EX + "TWAP mode selected >> options:"
                   "\n 1 >> linear twap by $ amount"
@@ -135,7 +153,8 @@ def binance_futures_cli():
             print("Open position mode selected >> options:"
                   "\n 1 >> market orders"
                   "\n 2 >> limit orders"
-                  "\n 3 >> TWAPS")
+                  "\n 3 >> limits at bid/ask"
+                  "\n 4 >> TWAPS")
             try:
                 order_mode = int(input("input number >>> "))
             except:
@@ -145,19 +164,10 @@ def binance_futures_cli():
             if order_mode == 1:
                 binance_usdt_futures.set_market_order_open(client)
             elif order_mode == 2:
-                print("\n")
-                print("Limit order mode seleceted >> options:"
-                      "\n 1 >> limit orders between 2 prices by $ amount"
-                      )
-                try:
-                    limit_order_mode = int(input("input number >>> "))
-                except:
-                    print("input must be number")
-                    limit_order_mode = 0
-
-                if limit_order_mode == 1:
-                    binance_usdt_futures.set_limits_open(client)
+                binance_usdt_futures.set_limits_open(client)
             elif order_mode == 3:
+                binance_usdt_futures.set_limits_at_bidask_open(client)
+            elif order_mode == 4:
                 binance_usdt_futures.set_linear_twap_open(client)
 
         elif mode == 3:
@@ -165,8 +175,9 @@ def binance_futures_cli():
             print("Close / reduce position mode selected >> options:"
                   "\n 1 >> market orders"
                   "\n 2 >> limit orders"
-                  "\n 3 >> TWAPS"
-                  "\n 4 >> close all positions")
+                  "\n 3 >> limits at bid/ask"
+                  "\n 4 >> TWAPS"
+                  "\n 5 >> close all positions")
             try:
                 order_mode = int(input("input number >>> "))
             except:
@@ -178,8 +189,10 @@ def binance_futures_cli():
             elif order_mode == 2:
                 binance_usdt_futures.set_limits_close(client)
             elif order_mode == 3:
-                binance_usdt_futures.set_linear_twap_close(client)
+                binance_usdt_futures.set_limits_at_bidask_close(client)
             elif order_mode == 4:
+                binance_usdt_futures.set_linear_twap_close(client)
+            elif order_mode == 5:
                 binance_usdt_futures.close_all_positions(client)
 
         elif mode == 4:
@@ -201,8 +214,8 @@ def main():
     while not exit:
         print("\n")
         print(Fore.LIGHTYELLOW_EX + "Select account:"
-              "\n 1 >> Binance SPOT - personal"
-              "\n 2 >> Binance USDT perps - personal"
+              "\n 1 >> Binance SPOT"
+              "\n 2 >> Binance USDT perps"
               "\n 999 >> check current running processes"
               "\n 0 >> exit terminal")
 

@@ -302,7 +302,7 @@ def linear_twap(client, usd_size, coin_sell_amount ,ticker, side, duration, orde
                 time.sleep(time_delay)
 
 
-def limit_tranche(client, usd_size, ticker, side, upper_price, lower_price, order_amount):
+def limit_tranche(client, usd_size, ticker, side, upper_price, lower_price, order_amount, bid_ask:bool):
     """
 
     :param client: bybit client
@@ -327,21 +327,24 @@ def limit_tranche(client, usd_size, ticker, side, upper_price, lower_price, orde
 
     last_price = get_last_price(ticker)
     error = True
-    if upper_price > lower_price:
-        if side == "b":
-            if last_price > upper_price:
-                error = False
+    if not bid_ask:
+        if upper_price > lower_price:
+            if side == "b":
+                if last_price > upper_price:
+                    error = False
+                else:
+                    print("on buy side last price should be higher than upper price limit")
+            elif side == "s":
+                if last_price < lower_price:
+                    error = False
+                else:
+                    print("on sell side last price should be lower than lower price limit")
             else:
-                print("on buy side last price should be higher than upper price limit")
-        elif side == "s":
-            if last_price < lower_price:
-                error = False
-            else:
-                print("on sell side last price should be lower than lower price limit")
+                print(f"Error with side input || input: {side} || should be: b/s")
         else:
-            print(f"Error with side input || input: {side} || should be: b/s")
+            print("upper price limit should be higher than lower price limit")
     else:
-        print("upper price limit should be higher than lower price limit")
+        error = False
 
     if not error:
         if side == "b":
@@ -524,9 +527,9 @@ def set_limit_orders_usd(client):
     upper_price = cli_inputs.select_upper_limit_price()
     lower_price = cli_inputs.select_lower_limit_price()
     order_amount = cli_inputs.select_order_amount()
+    bid_ask = False
 
-
-    limit_thread = Thread(target=limit_tranche, args=(client, usd_size, ticker, side, upper_price, lower_price, order_amount), name=f"SPOT_{ticker}_{side}_{usd_size}limit_tranche").start()
+    limit_thread = Thread(target=limit_tranche, args=(client, usd_size, ticker, side, upper_price, lower_price, order_amount, bid_ask), name=f"SPOT_{ticker}_{side}_{usd_size}limit_tranche").start()
 
 
 def set_limit_orders_pct(client):
@@ -542,6 +545,7 @@ def set_limit_orders_pct(client):
     side = cli_inputs.select_side()
     upper_price = cli_inputs.select_upper_limit_price()
     lower_price = cli_inputs.select_lower_limit_price()
+    bid_ask = False
     avg_prc = (upper_price + lower_price) / 2
     if side == "s":
         if ticker[:-4] in balances:
@@ -564,11 +568,93 @@ def set_limit_orders_pct(client):
 
     order_amount = cli_inputs.select_order_amount()
 
-    limit_thread = Thread(target=limit_tranche, args=(client, usd_size, ticker, side, upper_price, lower_price, order_amount), name=f"SPOT_{ticker}_{side}_{usd_size}limit_tranche").start()
+    limit_thread = Thread(target=limit_tranche, args=(client, usd_size, ticker, side, upper_price, lower_price, order_amount, bid_ask), name=f"SPOT_{ticker}_{side}_{usd_size}limit_tranche").start()
 
+
+def set_limit_orders_usd_bidask(client):
+    """
+        Functions that sets basic limit orders
+
+        :return:
+        """
+    tickers = get_spot_tickers(client=client)
+    ticker = cli_inputs.select_ticker(tickers=tickers)
+    min_notional, max_notional, decimals, tick_decimals ,min_qty, max_qty = get_instrument_info(client, ticker)
+
+    usd_size = cli_inputs.select_usdt_size()
+    side = cli_inputs.select_side()
+
+    bps_range = 0.004
+    if ticker in ["BTCUSDT", "ETHUSDT"]:
+        bps_range = 0.001
+    last_price = get_last_price(ticker)
+
+    if side == "b":
+        upper_price = last_price
+        lower_price = round(upper_price - (last_price * bps_range), tick_decimals)
+    elif side == "s":
+        lower_price = last_price
+        upper_price = round(lower_price + (last_price * bps_range), tick_decimals)
+
+    order_amount = 10
+    bid_ask = True
+
+    limit_thread = Thread(target=limit_tranche, args=(client, usd_size, ticker, side, upper_price, lower_price, order_amount, bid_ask), name=f"SPOT_{ticker}_{side}_{usd_size}limit_tranche").start()
+
+
+def set_limit_orders_pct_bid_ask(client):
+    """
+       Functions that sets basic limit orders
+
+       :return:
+       """
+    balances = get_spot_balances(client, display=False)
+
+    tickers = get_spot_tickers(client=client)
+    ticker = cli_inputs.select_ticker(tickers=tickers)
+    side = cli_inputs.select_side()
+    min_notional, max_notional, decimals, tick_decimals, min_qty, max_qty = get_instrument_info(client, ticker)
+    bps_range = 0.004
+    if ticker in ["BTCUSDT", "ETHUSDT"]:
+        bps_range = 0.001
+    last_price = get_last_price(ticker)
+
+    if side == "b":
+        upper_price = last_price
+        lower_price = round(upper_price - (last_price * bps_range), tick_decimals)
+    elif side == "s":
+        lower_price = last_price
+        upper_price = round(lower_price + (last_price * bps_range), tick_decimals)
+
+    order_amount = 10
+    bid_ask = True
+
+    avg_prc = (upper_price + lower_price) / 2
+    if side == "s":
+        if ticker[:-4] in balances:
+            coin_balance = balances[ticker[:-4]]["coin_amount"]
+        else:
+            coin_balance = 0
+        acc_pct = cli_inputs.select_pct()
+        if acc_pct == 1:
+            acc_pct = 0.995
+        usd_size = round((coin_balance * avg_prc * 0.999) * acc_pct)
+    else:
+        if "USDT" in balances:
+            usdt_balance = balances["USDT"]["coin_amount"]
+        else:
+            usdt_balance = 0
+        acc_pct = cli_inputs.select_pct()
+        if acc_pct == 1:
+            acc_pct = 0.995
+        usd_size = round(usdt_balance * acc_pct)
+
+    limit_thread = Thread(target=limit_tranche, args=(client, usd_size, ticker, side, upper_price, lower_price, order_amount, bid_ask), name=f"SPOT_{ticker}_{side}_{usd_size}limit_tranche").start()
 
 
 # client = auth()
+# set_limit_orders_usd_bidask(client)
+# set_limit_orders_pct_bid_ask(client)
 # balances = get_spot_balances(client, display=True)
 # tickers = get_spot_tickers(client)
 # prc = get_last_price("AIUSDT")
