@@ -205,7 +205,7 @@ def get_active_stop_orders(client, ticker):
 
     tp_id = None
     tp_price = None
-    if len(orders) == 2:
+    if len(orders) >= 1:
         for order in orders:
             if order["type"] == "STOP_MARKET":
                 sl_id = order["orderId"]
