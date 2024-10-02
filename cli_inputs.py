@@ -1,11 +1,74 @@
 # CLI inputs
-def select_ticker(tickers):
+from binance.um_futures import UMFutures
+from binance.client import Client
+import pandas as pd
+
+
+def auth_spot():
+    binance_spot_client = Client(testnet=False, api_key="", api_secret="")
+    return binance_spot_client
+
+
+def auth_perp():
+    binance_usdt_m_client = UMFutures(key="", secret="")
+    return binance_usdt_m_client
+
+def ob_depth(ticker, spot:bool):
+
+    if spot:
+        spot_client = auth_spot()
+
+        ob = spot_client.get_order_book(symbol=ticker, limit=500)
+    else:
+        perp_client = auth_perp()
+
+        ob = perp_client.depth(symbol=ticker, limit=500)
+
+    bids = ob["bids"]
+    asks = ob["asks"]
+    bid_df = pd.DataFrame(bids, columns=["price", "size"])
+    ask_df = pd.DataFrame(asks, columns=["price", "size"])
+
+    bid_df["price"] = pd.to_numeric(bid_df["price"])
+    bid_df["size"] = pd.to_numeric(bid_df["size"])
+
+    bid_depth = round(abs(((bid_df["price"].head(1).values[0] / bid_df["price"].tail(1).values[0]) - 1) * 100), 4)
+    avg_bid_price = bid_df["price"].mean()
+    total_bid_size_coins = bid_df["size"].sum()
+    bid_usd_depth = avg_bid_price * total_bid_size_coins
+
+    if bid_usd_depth > 1000000:
+        bid_usd_depth = f"{round(bid_usd_depth / 1000000, 3)} Mil"
+    else:
+        bid_usd_depth = f"{round(bid_usd_depth / 1000, 1)} k"
+
+    ask_df["price"] = pd.to_numeric(ask_df["price"])
+    ask_df["size"] = pd.to_numeric(ask_df["size"])
+
+    ask_depth = round(abs(((ask_df["price"].head(1).values[0] / ask_df["price"].tail(1).values[0]) - 1) * 100), 4)
+    avg_ask_price = ask_df["price"].mean()
+    total_ask_size_coins = ask_df["size"].sum()
+    ask_usd_depth = avg_ask_price * total_ask_size_coins
+
+    if ask_usd_depth > 1000000:
+        ask_usd_depth = f"{round(ask_usd_depth / 1000000, 3)} Mil"
+    else:
+        ask_usd_depth = f"{round(ask_usd_depth / 1000, 1)} k"
+
+    print(f"ob data for: {ticker}")
+    print(f"BID: 500_level depth: {bid_depth} % | usd depth: {bid_usd_depth}")
+    print(f"ASK: 500_level depth: {ask_depth} % | usd depth: {ask_usd_depth}")
+
+
+def select_ticker(tickers, spot:bool):
     ticker_selected = False
     while not ticker_selected:
         try:
             input_ticker = input("select ticker[without denominator -> ex: btc] >>> ")
             ticker = tickers[input_ticker.upper()]
             print(f"{ticker} selected")
+            ob_depth(ticker, spot)
+
             ticker_selected = True
             return ticker
         except:

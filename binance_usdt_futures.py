@@ -767,7 +767,7 @@ def set_market_order_open(client):
     """
 
     tickers = get_usdt_m_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=False)
 
     side = cli_inputs.select_side()
     usd_size = cli_inputs.select_usdt_size()
@@ -793,7 +793,7 @@ def set_market_order_close(client):
 
 def set_linear_twap_open(client):
     tickers = get_usdt_m_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=False)
 
     side = cli_inputs.select_side()
     usd_size = cli_inputs.select_usdt_size()
@@ -826,7 +826,7 @@ def set_limits_open(client):
     positions = get_open_positions(client, False)
 
     tickers = get_usdt_m_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=False)
     side = cli_inputs.select_side()
     usd_size = cli_inputs.select_usdt_size()
     upper_price = cli_inputs.select_upper_limit_price()
@@ -912,7 +912,7 @@ def set_limits_at_bidask_open(client):
     positions = get_open_positions(client, False)
 
     tickers = get_usdt_m_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=False)
     min_notional, min_qty, max_qty, decimals, tick_decimals = get_instrument_info(client, ticker)
 
     side = cli_inputs.select_side()

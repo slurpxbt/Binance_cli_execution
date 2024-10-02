@@ -399,7 +399,7 @@ def set_market_order_usd(client):
     """
 
     tickers = get_spot_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=True)
     usd_size = cli_inputs.select_usdt_size()
     side = cli_inputs.select_side()
 
@@ -421,7 +421,7 @@ def set_market_order_pct(client):
     """
     balances = get_spot_balances(client, display=False)
     tickers = get_spot_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=True)
     side = cli_inputs.select_side()
 
     if side == "s":
@@ -458,7 +458,7 @@ def set_linear_twap_usd(client):
     :return:
     """
     tickers = get_spot_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=True)
     usd_size = cli_inputs.select_usdt_size()
     side = cli_inputs.select_side()
 
@@ -484,7 +484,7 @@ def set_linear_twap_pct(client):
     balances = get_spot_balances(client, display=False)
 
     tickers = get_spot_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=True)
     side = cli_inputs.select_side()
 
     if side == "s":
@@ -521,7 +521,7 @@ def set_limit_orders_usd(client):
     :return:
     """
     tickers = get_spot_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=True)
     usd_size = cli_inputs.select_usdt_size()
     side = cli_inputs.select_side()
     upper_price = cli_inputs.select_upper_limit_price()
@@ -541,7 +541,7 @@ def set_limit_orders_pct(client):
     balances = get_spot_balances(client, display=False)
 
     tickers = get_spot_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=True)
     side = cli_inputs.select_side()
     upper_price = cli_inputs.select_upper_limit_price()
     lower_price = cli_inputs.select_lower_limit_price()
@@ -578,7 +578,7 @@ def set_limit_orders_usd_bidask(client):
         :return:
         """
     tickers = get_spot_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=True)
     min_notional, max_notional, decimals, tick_decimals ,min_qty, max_qty = get_instrument_info(client, ticker)
 
     usd_size = cli_inputs.select_usdt_size()
@@ -611,7 +611,7 @@ def set_limit_orders_pct_bid_ask(client):
     balances = get_spot_balances(client, display=False)
 
     tickers = get_spot_tickers(client=client)
-    ticker = cli_inputs.select_ticker(tickers=tickers)
+    ticker = cli_inputs.select_ticker(tickers=tickers, spot=True)
     side = cli_inputs.select_side()
     min_notional, max_notional, decimals, tick_decimals, min_qty, max_qty = get_instrument_info(client, ticker)
     bps_range = 0.004
