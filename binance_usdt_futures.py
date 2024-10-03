@@ -84,7 +84,11 @@ def get_usdt_m_tickers(client):
 
             symbol = symbol.replace("USDT", "")
 
-            if "10000" in symbol:
+            if "1000000" in symbol:
+                symbol = symbol.replace("1000000", "")
+            elif "100000" in symbol:
+                symbol = symbol.replace("100000", "")
+            elif "10000" in symbol:
                 symbol = symbol.replace("10000", "")
             elif "1000" in symbol:
                 symbol = symbol.replace("1000", "")
