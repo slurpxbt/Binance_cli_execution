@@ -188,7 +188,7 @@ def get_instrument_info_usdt_m(client, ticker):
 def get_filled_orders_spot(client):
 
     tickers = get_spot_tickers(client)
-    ticker = cli_inputs.select_ticker(tickers)
+    ticker = cli_inputs.select_ticker(tickers, spot=True)
     lookback_window = cli_inputs.select_lookback_window()
     orders = client.get_my_trades(symbol=ticker, limit=1000)
     min_notional, max_notional, decimals, tick_decimals, min_qty, max_qty = get_instrument_info_spot(client, ticker)
@@ -234,7 +234,7 @@ def view_open_orders_spot(client):
 def get_filled_orders_usdt_m(client):
 
     tickers = get_usdt_m_tickers(client)
-    ticker = cli_inputs.select_ticker(tickers)
+    ticker = cli_inputs.select_ticker(tickers, spot=False)
     lookback_window = cli_inputs.select_lookback_window()
     orders = client.get_account_trades(symbol="BTCUSDT", limit=1000)
     min_notional, min_qty, max_qty, decimals, tick_decimals = get_instrument_info_usdt_m(client, ticker)
