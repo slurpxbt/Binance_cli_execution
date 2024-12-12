@@ -11,7 +11,7 @@ from threading import Thread
 import math
 
 
-def get_credentials():
+def get_credentials(account):
     root = Path(".")
     file_path = f"{root}/credentials.json"
 
@@ -20,17 +20,18 @@ def get_credentials():
         file = file.read()
         credentials = json.loads(file)
 
-        api_key = credentials["binance_api_key"]
-        api_secret = credentials["binance_api_secret"]
+        api_key = credentials[account]["binance_api_key"]
+        api_secret = credentials[account]["binance_api_secret"]
 
     return api_key, api_secret
 
 
-def auth():
-    api_key, api_secret = get_credentials()
+def auth(account):
+    api_key, api_secret = get_credentials(account)
     binance_usdt_m_client = UMFutures(key=api_key, secret=api_secret)
 
     return binance_usdt_m_client
+
 
 
 def get_collateral_info(client, display:bool):
@@ -1082,8 +1083,6 @@ def close_all_positions(client):
             linear_twap_thread = Thread(target=linear_twap_close, args=(client, ticker, side, coin_size, duration, order_amount, pct), name=f"BinanceF_{ticker}_{side}_{coin_size}_coins_twap{round(duration / 60)}min").start()
     else:
         print("\nNo open positions")
-
-
 
 
 

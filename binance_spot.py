@@ -11,7 +11,7 @@ import cli_inputs
 from threading import Thread
 
 
-def get_credentials():
+def get_credentials(account):
     root = Path(".")
     file_path = f"{root}/credentials.json"
 
@@ -20,14 +20,14 @@ def get_credentials():
         file = file.read()
         credentials = json.loads(file)
 
-        api_key = credentials["binance_api_key"]
-        api_secret = credentials["binance_api_secret"]
+        api_key = credentials[account]["binance_api_key"]
+        api_secret = credentials[account]["binance_api_secret"]
 
     return api_key, api_secret
 
 
-def auth():
-    api_key, api_secret = get_credentials()
+def auth(account):
+    api_key, api_secret = get_credentials(account)
     binance_client = Client(testnet=False, api_key=api_key, api_secret=api_secret)
 
     return binance_client

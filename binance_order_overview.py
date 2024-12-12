@@ -17,7 +17,7 @@ colorama.init(autoreset=True)
 pd.set_option('display.max_columns', 20)
 pd.set_option('display.width', 500)
 
-def get_credentials():
+def get_credentials(account):
     root = Path(".")
     file_path = f"{root}/credentials.json"
 
@@ -26,14 +26,14 @@ def get_credentials():
         file = file.read()
         credentials = json.loads(file)
 
-        api_key = credentials["binance_api_key"]
-        api_secret = credentials["binance_api_secret"]
+        api_key = credentials[account]["binance_api_key"]
+        api_secret = credentials[account]["binance_api_secret"]
 
     return api_key, api_secret
 
 
-def auth():
-    api_key, api_secret = get_credentials()
+def auth(account):
+    api_key, api_secret = get_credentials(account=account)
     binance_spot_client = Client(testnet=False, api_key=api_key, api_secret=api_secret)
     binance_usdt_m_client = UMFutures(key=api_key, secret=api_secret)
 
@@ -273,8 +273,8 @@ def get_filled_orders_usdt_m(client):
     print(final_df.to_markdown())
 
 
-def orderOverview_binance_personal_SPOT():
-    spot_client, usdt_m_client = auth()
+def orderOverview_binance_personal_SPOT(account):
+    spot_client, usdt_m_client = auth(account=account)
 
     exit = False
     while not exit:
@@ -306,8 +306,8 @@ def orderOverview_binance_personal_SPOT():
             #       "\n 2 >> cancel orders between 2 prices for specific side")
             # price_mode = int(input(Fore.LIGHTCYAN_EX + "Input number >>> "))
 
-def orderOverview_binance_personal_usdt_m():
-    spot_client, usdt_m_client = auth()
+def orderOverview_binance_personal_usdt_m(account):
+    spot_client, usdt_m_client = auth(account=account)
 
     exit = False
     while not exit:
@@ -335,7 +335,8 @@ def orderOverview_binance_personal_usdt_m():
             #       "\n 2 >> cancel orders between 2 prices for specific side")
             # price_mode = int(input(Fore.LIGHTCYAN_EX + "Input number >>> "))
 
-def main():
+
+def Order_overview():
     exit = False
     while not exit:
         print("\n")
@@ -351,14 +352,14 @@ def main():
             print(Fore.LIGHTYELLOW_EX + "Terminal closing")
         elif mode == 1:
             print("\n")
-            orderOverview_binance_personal_SPOT()
+            orderOverview_binance_personal_SPOT(account="personal")
         elif mode == 2:
             print("\n")
-            orderOverview_binance_personal_usdt_m()
+            orderOverview_binance_personal_usdt_m(account="personal")
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
 
 
